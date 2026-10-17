@@ -1,0 +1,7 @@
+{
+  "source": "User supplied local directory; upstream URL not provided",
+  "name": "nvngx_dlssnr_compat-fp16-310.9.16-cuda13.4.3",
+  "sha256": "cdfa6c1ec784867182164c7836f324f087b5c9f374d0c9fe46f54999feabf3ed",
+  "bytes": 276162560,
+  "filename": "nvngx_dlssnr.dll"
+}

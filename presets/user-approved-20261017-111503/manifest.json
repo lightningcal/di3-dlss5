@@ -1,0 +1,22 @@
+{
+  "files": [
+    {
+      "path": "ReShade.ini",
+      "sha256": "BC88A6D7C17206EF6F2AED4F1F594960A51172745076121E2BDD51E045C34217"
+    },
+    {
+      "path": "mods\\di3-dlss5\\DI3-DLSS5.ini",
+      "sha256": "9D71A3C00A6F592408B82160D448E64A451E9F736EB3300CB412183E893C6276"
+    },
+    {
+      "path": "mods\\di3-dlss5\\native\\dlss5-feed.cfg",
+      "sha256": "20E30C50F0F39F47EFBC0A6B3CD7B1EB5B77161CE13916A7A00867A0EAD145B1"
+    },
+    {
+      "path": "mods\\di3-dlss5\\native\\host64\\ReShade.ini",
+      "sha256": "7AEFEEEB9DCC450125C111708CFD85889535AEF09F9CBFDCE00B241FA6467570"
+    }
+  ],
+  "game_path": "<game>",
+  "saved_at": "2026-10-17T11:15:03.8978201-05:00"
+}

@@ -1,0 +1,10 @@
+.cache/
+build/
+dist/
+local/
+*.log
+nvngx_dlssnr_*/
+__pycache__/
+
+# Local desktop shortcuts may embed machine-specific paths.
+*.lnk

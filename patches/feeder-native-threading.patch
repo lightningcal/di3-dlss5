@@ -1,0 +1,34 @@
+diff --git a/src/dlss5-feed32.cpp b/src/dlss5-feed32.cpp
+index 2ea3982..d90d954 100644
+--- a/src/dlss5-feed32.cpp
++++ b/src/dlss5-feed32.cpp
+@@ -5268,8 +5268,27 @@ static void FeedFrameDispatch(reshade::api::effect_runtime *rt, reshade::api::co
+         if (ok && SUCCEEDED(ctx->QueryInterface(__uuidof(ID3D11Multithread), reinterpret_cast<void **>(&g.mt))) &&
+             g.mt != nullptr)
+         {
+-            g.mt_was_on = g.mt->SetMultithreadProtected(TRUE) != FALSE;
+-            Log("[feed32] D3D11 multithread protection enabled (the game had it %s)", g.mt_was_on ? "on" : "off");
++            // DI3 diagnostic: retain the engine's original threading policy when explicitly requested.
++            // Default upstream behavior remains unchanged. Read once, before the first submitted frame.
++            bool preserve_native_threading = false;
++            char cfg_path[MAX_PATH]; CfgPath(cfg_path);
++            FILE *cfg_file = nullptr;
++            if (fopen_s(&cfg_file, cfg_path, "r") == 0 && cfg_file != nullptr)
++            {
++                char line[160];
++                while (fgets(line, sizeof(line), cfg_file) != nullptr)
++                {
++                    int value = 0;
++                    if (sscanf_s(line, "di3_preserve_native_threading=%d", &value) == 1)
++                        preserve_native_threading = value == 1;
++                }
++                fclose(cfg_file);
++            }
++            g.mt_was_on = g.mt->GetMultithreadProtected() != FALSE;
++            if (!preserve_native_threading) g.mt->SetMultithreadProtected(TRUE);
++            Log("[feed32] DI3 threading diagnostic: preserve_native=%d, original_protection=%d, active_protection=%d, render_thread=%lu",
++                preserve_native_threading ? 1 : 0, g.mt_was_on ? 1 : 0,
++                g.mt->GetMultithreadProtected() ? 1 : 0, GetCurrentThreadId());
+         }
+     }
+ 

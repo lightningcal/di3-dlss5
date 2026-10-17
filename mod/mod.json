@@ -1,0 +1,11 @@
+{
+  "manifestVersion": 1,
+  "id": "local.di3-dlss5",
+  "name": "DLSS 5 Neural Rendering (experimental)",
+  "version": "0.1.0",
+  "minLoaderVersion": "1.1.0",
+  "entry": "main.lua",
+  "authors": [
+    "DI3 DLSS5 contributors"
+  ]
+}

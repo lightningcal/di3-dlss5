@@ -1,0 +1,39 @@
+[
+  {
+    "sha": "9cc19e28f8fb4e216ea61621fdf6443e207e338ec639979ab335503c75f48f36",
+    "url": "https://github.com/jlrouzies-fr/DLSS5-Feeder/releases/download/v1.19.0/DLSS5-Feeder-1.19.0.zip",
+    "name": "feeder"
+  },
+  {
+    "sha": "46124cfaef532ad5f6da07494772ea8c1b3e719f934e254385697f38d1289e3f",
+    "url": "https://github.com/RankFTW/rhi-repo/releases/download/dlssnr-310.8.0-RTX40/nvngx_dlssnr_310.8.0-RTX40.zip",
+    "name": "nr"
+  },
+  {
+    "sha": "a745040cb2e93e3a1500a6c5a322972acc4c5c667108fcea31c748285d6364a9",
+    "url": "https://github.com/RankFTW/rhi-repo/releases/download/renodx-dlss5-8.5.0-rc10/renodx-dlss5_8.5.0-rc10.zip",
+    "name": "renodx-dlss5-8.5.0-rc10"
+  },
+  {
+    "sha": "1823ec911c77482e6731447dfb0db3def8aa710e092f59f58c4c4c55285d492d",
+    "url": "https://github.com/RankFTW/rhi-repo/releases/download/dlss-310.9.16/nvngx_dlss_310.9.16.zip",
+    "name": "dlss-310.9.16"
+  },
+  {
+    "name": "lumenite",
+    "url": "https://codeload.github.com/umar-afzaal/LumeniteFX/zip/f80e98d716ad72e12af6f7baa727bcfeb4be5094",
+    "commit": "f80e98d716ad72e12af6f7baa727bcfeb4be5094",
+    "sha": "982a18507df0249118950ba68af52bb43d8cbd85458a4704f96e49de0b4d0e74"
+  },
+  {
+    "name": "framework",
+    "url": "https://codeload.github.com/crosire/reshade-shaders/zip/fd0022170615ce0d8162d219bff07232fa6dd84f",
+    "commit": "fd0022170615ce0d8162d219bff07232fa6dd84f",
+    "sha": "a3b110ba5118f3b944d74f0b0746c21280071d389ed98d615bf3c4b3a1778586"
+  },
+  {
+    "name": "reshade",
+    "url": "https://reshade.me/downloads/ReShade_Setup_6.8.0_Addon.exe",
+    "sha": "afe4c8f13048306307983b8b3d41d5bf00a86820440b0e57dea10950e1176445"
+  }
+]

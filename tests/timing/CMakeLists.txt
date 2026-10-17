@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(di3_helper_timing LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_library(di3_helper_timing SHARED probe.cpp)
+target_include_directories(di3_helper_timing PRIVATE "${RESHADE_SOURCE}/include")
+set_target_properties(di3_helper_timing PROPERTIES SUFFIX ".addon64")
+add_executable(di3_native_present native-present.cpp)
+target_link_libraries(di3_native_present PRIVATE d3d12 dxgi)
