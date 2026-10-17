@@ -341,3 +341,6 @@ Append the hypothesis, exact single variable changed, baseline, backup/rollback 
 
 ### Initial repository commit
 - User requested committing all DLSS5 mod work. Commit scope includes source/installer, mod configuration, setup guide/screenshots, experiment record, sanitized saved preset, diagnostic patch and tests. Ignored runtime downloads, build outputs, logs, archives, private backups and local shortcut remain excluded. Existing installer roundtrip and privacy/archive audit passed before staging. This commit does not establish current-session neural performance success; recorded validation limits remain applicable.
+
+### Main README screenshot comparison
+- Added before/after images to the main README using existing original PNG assets. Caption explicitly identifies DLSS5 plus Tonemap/CAS/FakeHDR/Vibrance and separate-frame differences. Verified image targets; linked visual setup instructions.

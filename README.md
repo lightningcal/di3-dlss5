@@ -16,6 +16,20 @@ The DLSS mod installer **does not install or apply the CrabeLoader patch**. See 
 
 Read the [machine setup and configuration guide](docs/SETUP.md) for prerequisites, the global background-cap fix, installation, current-session neural verification, optional visual effects and complete preset backups.
 
+## Before and after
+
+The **after** image shows the combined look of **DLSS 5 plus Tonemap, CAS sharpening, FakeHDR and Vibrance**. The comparison includes those additional ReShade effects; it does not isolate the changes made by DLSS 5 alone. These are separate gameplay captures with small pose/HUD differences.
+
+**Before**
+
+![Before the combined DLSS 5 and ReShade look](docs/images/di3-before.png)
+
+**After - DLSS 5 plus additional ReShade effects**
+
+![After: DLSS 5 with Tonemap, CAS sharpening, FakeHDR and Vibrance](docs/images/di3-after-reshade.png)
+
+See the [visual preset section of the setup guide](docs/SETUP.md#5-optional-reproduce-the-brighter-visual-look) for the effect order and brightness settings.
+
 ## Layout and responsibilities
 
 ```text
