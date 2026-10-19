@@ -9,7 +9,7 @@ Experimental CrabeLoader package for Disney Infinity 3.0 Gold Edition (32-bit, D
 **This mod runs ReShade through the CrabeReShade `.asi` plugin for CrabeLoader.** The plugin hosts ReShade on Disney Infinity 3.0's own D3D11 swap chain. Its companion ReShade build captures the game's **Direct3D 11 depth data** and starts add-ons such as this mod's Feed.
 
 Before installing this mod, you need:
-- CrabeLoader with plugin API v2 (`onPresent` / `onBeforeResize`). The reference is the CrabeLoader fork's `fix/reshade-hosting` branch, commit `a201cdb`.
+- CrabeLoader with plugin API v2 (`onPresent` / `onBeforeResize`). The reference is the CrabeLoader fork's `feat/plugin-render-callbacks` branch, commit `a201cdb`.
 - `plugins/CrabeReShade.asi`.
 - The companion **32-bit `plugins/ReShade32.dll`**. The ordinary ReShade installer's DLL runs effects through the plugin but does not start add-ons, so it is not enough for this mod.
 

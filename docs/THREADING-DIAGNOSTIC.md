@@ -10,7 +10,7 @@ Build prerequisites: Git, VS2022 C++ Build Tools, Windows SDK. From repository r
 
 ```powershell
 & .\scripts\build-threading-diagnostic.ps1
-& .\scripts\test-integration.ps1 -CrabeRoot 'PATH_TO_CRABE_CHECKOUT' -ReShadeDll 'PATH_TO_CUSTOM_ReShade32.dll' -FeederAddonOverride .\build\threading-diagnostic\dlss5-feed.addon32 -PreserveNativeThreading
+& .\scripts\test-integration.ps1 -CrabeReShadeRoot 'PATH_TO_CRABERESHADE_CHECKOUT' -ReShadeDll 'PATH_TO_CUSTOM_ReShade32.dll' -FeederAddonOverride .\build\threading-diagnostic\dlss5-feed.addon32 -PreserveNativeThreading
 ```
 
 Pinned Feeder v1.19.0 commit3c09eabcd138a68d144b6cc396a23e6b493eea4d, patch in patches/feeder-native-threading.patch. Vulkan-Headers v1.3.290 commitb379292b2ab6df5771ba9870d53cf8b2c9295daf supplies missing compile-time headers only. The upstream build script produces x86 Release addon code; the64-bit host is unchanged. Builder does not deploy automatically.
