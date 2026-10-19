@@ -4,13 +4,16 @@ Experimental CrabeLoader package for Disney Infinity 3.0 Gold Edition (32-bit, D
 
 **Status:** the fixed30FPS plateau was removed by setting NVIDIA Global Background Application Max Frame RateOff: user screenshot69FPS, live client~75-78FPS. Neural rendering was verified earlier, but the current faster helper session still needs fresh feature18/ENGAGED evidence before the full60FPS-with-neural target is confirmed. Helper-only backgroundOff and VSyncOff did not remove the plateau. See the [running troubleshooting log](docs/TROUBLESHOOTING.md) for every experiment, results, current settings, evidence and rollback details. Keep that log updated as testing continues.
 
-## Required dependency: patched CrabeLoader
+## Required dependency: CrabeReShade plugin and companion ReShade DLL
 
-**This mod depends on a separate CrabeLoader patch developed for this integration.** The patch enables ReShade hosting inside Disney Infinity 3.0 and captures the game's **Direct3D 11 depth data**, making it available to ReShade and the DLSS 5 pipeline. An unpatched CrabeLoader installation does not provide the integration this mod requires.
+**This mod runs ReShade through the CrabeReShade `.asi` plugin for CrabeLoader.** The plugin hosts ReShade on Disney Infinity 3.0's own D3D11 swap chain. Its companion ReShade build captures the game's **Direct3D 11 depth data** and starts add-ons such as this mod's Feed.
 
-Install both the patched CrabeLoader and its companion custom **32-bit `Crabe/ReShade32.dll`** before installing this mod. The reference implementation is the CrabeLoader fork's `fix/reshade-hosting` branch, commit `0977b9c` (or a compatible successor). Installing the ordinary ReShade addon-support build alone is insufficient.
+Before installing this mod, you need:
+- CrabeLoader with plugin API v2 (`onPresent` / `onBeforeResize`). The reference is the CrabeLoader fork's `fix/reshade-hosting` branch, commit `a201cdb`.
+- `plugins/CrabeReShade.asi`.
+- The companion **32-bit `plugins/ReShade32.dll`**. The ordinary ReShade installer's DLL runs effects through the plugin but does not start add-ons, so it is not enough for this mod.
 
-The DLSS mod installer **does not install or apply the CrabeLoader patch**. See [build and deployment instructions below](#prerequisite-patched-crabeloader-and-custom-reshade) and the [machine setup guide](docs/SETUP.md).
+Still run the official ReShade installer for `ReShade.ini` and the shaders, then delete the `dxgi.dll` it leaves in the game folder. The DLSS mod installer **does not install the plugin or the companion DLL**. See [build and deployment instructions below](#prerequisite-crabereshade-plugin-and-companion-reshade) and the [machine setup guide](docs/SETUP.md).
 
 ## Start here
 
@@ -34,7 +37,8 @@ See the [visual preset section of the setup guide](docs/SETUP.md#5-optional-repr
 
 ```text
 DI3 + CrabeLoader
-  Crabe/ReShade32.dll                  existing custom DLL; installer preserves it
+  plugins/CrabeReShade.asi            ReShade host plugin; installer preserves it
+  plugins/ReShade32.dll               companion ReShade DLL; installer preserves it
   ReShade.ini                         backed up, selected keys merged
   mods/di3-dlss5/
     mod.json + main.lua               CrabeLoader discovery/status entry
@@ -46,19 +50,21 @@ DI3 + CrabeLoader
 
 The Lua entry announces the package. ReShade performs rendering; Home > Add-ons > DLSS 5 Feed controls it. Disabling the Lua entry in CrabeMenu does not unload the native addon. Use the Feeder Enabled checkbox for on/off comparison, or uninstall and restart to remove the native integration. No extra game-root graphics proxy is installed.
 
-## Prerequisite: patched CrabeLoader and custom ReShade
+## Prerequisite: CrabeReShade plugin and companion ReShade
 
-The required CrabeLoader patch and companion ReShade build provide three parts of the integration: hosting the ReShade runtime on the game's existing D3D11 swap chain, initializing ReShade addons, and capturing native D3D11 draw/depth-clear events so scene depth is available. They preserve the game's original D3D11 COM objects to retain the crash workaround. The CrabeLoader fork's `fix/reshade-hosting` commit `0977b9c` is the reference implementation; stock ReShade's manual runtime does not supply these capabilities by itself.
+The CrabeReShade plugin and its companion ReShade build provide three parts of the integration: hosting the ReShade runtime on the game's existing D3D11 swap chain, initializing ReShade add-ons, and forwarding native D3D11 draws, binds and depth clears so scene depth is available. They preserve the game's original D3D11 COM objects to retain the crash workaround. Stock ReShade's manual runtime does not start add-ons or see the game's draws by itself.
 
-From `<CrabeLoader checkout>`, with Git and VS2022 C++ Build Tools/Windows SDK installed:
+From a CrabeReShade checkout, with Git and VS2022 C++ Build Tools/Windows SDK installed:
 
 ```powershell
-& .\tools\reshade\build.ps1
+cmake -S . -B build -A Win32
+cmake --build build --config Release
+& .\companion\build.ps1
 ```
 
-This pins official ReShade 6.8.0 commit `18deaa52de0c425a78b329e9cb3c497281cd00ec`, applies `manual-addons.patch`, copies `crabe_manual_depth.hpp`, and builds Release/Win32. Output: `build\reshade-manual-addons\ReShade32.dll`. Close DI, back up the existing `Crabe\ReShade32.dll`, and copy this output there. Full instructions and native tests are in that fork's `docs/guides/reshade.md`. CrabeLoader itself also needs the updated ReShade bridge.
+This builds `build\Release\CrabeReShade.asi`. It also pins official ReShade 6.8.0 commit `18deaa52de0c425a78b329e9cb3c497281cd00ec`, applies `companion\manual-addons.patch`, copies `companion\crabe_manual_depth.hpp`, and builds `build\companion\ReShade32.dll` (Release/Win32). Close DI and copy both into the game's `plugins\` folder. CrabeReShade's `README.md` covers the plugin and its `loader.log` messages.
 
-The package installer checks the custom capability export name and records/preserves hashes of this DLL, CrabeLoader.asi and dinput8.dll. It does not build or replace them. Keep the earlier root ReShade proxy disabled.
+The package installer checks that `plugins\CrabeReShade.asi` exists and that `plugins\ReShade32.dll` has the companion's capability export. It does not build or replace either. Keep any ReShade `dxgi.dll` or `d3d11.dll` out of the game folder.
 
 ## Assemble and install
 
@@ -90,11 +96,11 @@ Initial working resolution is 100%, SDR, one neural pass, Lumenite provider=3. R
 ```powershell
 python -m unittest discover -s .\tests -p test_package.py
 python .\scripts\package.py test
-& .\scripts\test-integration.ps1 -CrabeRoot 'PATH_TO_CRABE_CHECKOUT' -ReShadeDll 'PATH_TO_CUSTOM_ReShade32.dll'
+& .\scripts\test-integration.ps1 -CrabeReShadeRoot 'PATH_TO_CRABERESHADE_CHECKOUT' -ReShadeDll 'PATH_TO_COMPANION_ReShade32.dll'
 python .\scripts\package.py verify --game 'PATH_TO_YOUR_GAME_FOLDER'
 ```
 
-The integration test needs VS2022/CMake and the Crabe fork's prepared ReShade headers. It creates a hidden x86 D3D11 scene and checks successful shader compilation, delivered frames, clean client shutdown and actual neural engagement. Tests copy native components into isolated evidence directories so they do not alter assembled configuration. Logs and result JSON live under ignored `local/evidence`.
+The integration test needs VS2022/CMake and the ReShade source that CrabeReShade's `companion\build.ps1` prepares under `build\reshade-src`. It creates a hidden x86 D3D11 scene and checks successful shader compilation, delivered frames, clean client shutdown and actual neural engagement. Tests copy native components into isolated evidence directories so they do not alter assembled configuration. Logs and result JSON live under ignored `local/evidence`.
 
 `verify` checks installed static files against the locally assembled manifest. INI/CFG files may change through the overlay and are intentionally treated as mutable; missing files still fail.
 

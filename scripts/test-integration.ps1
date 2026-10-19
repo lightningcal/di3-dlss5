@@ -1,5 +1,5 @@
 param(
- [Parameter(Mandatory=$true)][string]$CrabeRoot,
+ [Parameter(Mandatory=$true)][Alias('CrabeRoot')][string]$CrabeReShadeRoot,
  [Parameter(Mandatory=$true)][string]$ReShadeDll,
  [string]$FeederAddonOverride='',
  [switch]$PreserveNativeThreading
@@ -8,7 +8,7 @@ $ErrorActionPreference='Stop'
 $root=Split-Path $PSScriptRoot
 $cmake=(Get-Command cmake -ErrorAction SilentlyContinue).Source
 if(!$cmake){$cmake='C:\Program Files\CMake\bin\cmake.exe'}
-& $cmake -S "$root\tests" -B "$root\build\tests" -A Win32 "-DRESHADE_SOURCE=$CrabeRoot/build/reshade-src"
+& $cmake -S "$root\tests" -B "$root\build\tests" -A Win32 "-DRESHADE_SOURCE=$CrabeReShadeRoot/build/reshade-src"
 if($LASTEXITCODE){throw 'CMake configure failed'}
 & $cmake --build "$root\build\tests" --config Release
 if($LASTEXITCODE){throw 'CMake build failed'}
