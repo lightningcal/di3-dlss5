@@ -93,8 +93,9 @@ def verify_tree(base):
 def install(game):
     ensure_stopped(game); verify_tree(STAGE)
     if not (game/'DisneyInfinity3.exe').exists(): raise RuntimeError('Expected DisneyInfinity3.exe in game folder')
-    dll=game/'Crabe/ReShade32.dll'
-    if not dll.is_file(): raise RuntimeError('Custom Crabe/ReShade32.dll prerequisite missing')
+    if not (game/'plugins/CrabeReShade.asi').is_file(): raise RuntimeError('CrabeReShade plugin prerequisite missing: plugins/CrabeReShade.asi')
+    dll=game/'plugins/ReShade32.dll'
+    if not dll.is_file(): raise RuntimeError('Companion ReShade prerequisite missing: plugins/ReShade32.dll')
     # PE export name is present in the patched manual-depth build; version is checked in loader logs.
     if b'CrabeReShadeManualAddonSupport' not in dll.read_bytes(): raise RuntimeError('Custom manual addon bridge missing')
     target=game/MODREL

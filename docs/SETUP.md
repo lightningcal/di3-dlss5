@@ -15,33 +15,53 @@ Use the versions pinned by `sources.lock.json` when reproducing this setup. The 
 You need:
 
 - Disney Infinity **3.0 Gold Edition**, using `DisneyInfinity3.exe` (32-bit D3D11).
-- The CrabeLoader fork's `fix/reshade-hosting` implementation, including the custom addon/depth bridge from commit `0977b9c` or a compatible successor.
-- The custom **32-bit** `Crabe/ReShade32.dll` described below. A normal full-addon ReShade installer alone does not supply this manual-hosting integration.
+- CrabeLoader with plugin API v2 (`onPresent` / `onBeforeResize`), and the **CrabeReShade** plugin (`CrabeReShade.asi`).
+- ReShade 6, installed with the official ReShade installer, then moved into `plugins/` as described below.
+- The **companion** 32-bit `ReShade32.dll` built from CrabeReShade. The installer's own DLL runs ordinary effects through the plugin but does not start add-ons, so this mod's `.addon32` would never load with it.
 - Python 3.11 or newer for the source package's assembly/installation scripts; they use the standard library.
 - An NVIDIA GPU/runtime combination supported by the selected neural runtime. The package's locked RTX 40 runtime was evaluated on the RTX 4070; compatibility with other hardware needs its own validation.
 
-If building the custom DLL yourself, also install Git for Windows and Visual Studio 2022/Build Tools with **Desktop development with C++**, MSVC v143 and a Windows SDK. Initial assembly/build downloads need internet access. You do not need these C++ build tools merely to use an already-built compatible custom DLL.
+If building the companion DLL yourself, also install Git for Windows and Visual Studio 2022/Build Tools with **Desktop development with C++**, MSVC v143 and a Windows SDK. Initial assembly/build downloads need internet access. You do not need these C++ build tools merely to use an already-built companion DLL.
 
 Before installation, close the game and helper and back up `ReShade.ini`, your current preset, shader folders and existing loader files. The installer creates its own backup too. Keep your other shader packages if your preset uses them.
 
-### Build the custom ReShade DLL
+### Install ReShade, then move it into `plugins/`
 
-From the matching **CrabeLoader fork checkout**, run:
-
-```powershell
-& .\tools\reshade\build.ps1
-```
-
-The script pins official ReShade 6.8.0 commit `18deaa52de0c425a78b329e9cb3c497281cd00ec`, applies the fork's manual-addon patch and native depth capture, then builds Release/Win32. Deploy:
+1. Run the official ReShade installer, pick `DisneyInfinity3.exe`, choose **DirectX 10/11/12** and pick your effect packages. It puts `dxgi.dll`, `ReShade.ini` and `reshade-shaders/` in the game folder.
+2. **Delete the installer's `dxgi.dll` from the game folder.** Left there, it loads as ReShade's usual proxy and the CrabeReShade plugin refuses to start. (Without this mod you would instead move it into `plugins/` and rename it `ReShade32.dll`; this mod needs the companion DLL in that place instead.)
+3. Create a `plugins` folder next to `DisneyInfinity3.exe` if there isn't one, and put `CrabeReShade.asi` in it.
+4. Put the companion `ReShade32.dll` (next section) in `plugins/`. In Explorer, turn on *View > File name extensions* so it is not saved as `ReShade32.dll.dll`.
+5. Leave `ReShade.ini` and `reshade-shaders/` where the installer put them.
 
 ```text
-<CrabeLoader checkout>/build/reshade-manual-addons/ReShade32.dll
-    -> <game>/Crabe/ReShade32.dll
+DisneyInfinity3.exe
+ReShade.ini
+reshade-shaders/
+plugins/
+    CrabeReShade.asi
+    ReShade32.dll        <- the companion build, not the installer's dxgi.dll
 ```
 
-CrabeLoader itself must also contain the matching updated hosting bridge. Its build/deployment instructions and detailed companion DLL guide live in the fork, particularly `docs/guides/reshade.md`. The DLSS mod installer checks the custom DLL's capability export but does not build or replace the loader or custom DLL.
+There must be no ReShade `dxgi.dll` or `d3d11.dll` left beside the game. Do not touch system DLLs or another mod's graphics wrapper. The helper's own `mods/di3-dlss5/native/host64/dxgi.dll` is required and must stay in place.
 
-If a previous ordinary ReShade installation left a graphics proxy such as `d3d11.dll` or `dxgi.dll` in the **game root**, disable only that known ReShade proxy before using this route. Do not rename system DLLs or another mod's graphics wrapper. The helper's own `native/host64/dxgi.dll` is required and must stay in place. Check the filename is exactly `ReShade32.dll`, without an extra dot or hidden duplicate extension.
+Re-running the ReShade installer later (to update it) puts a new `dxgi.dll` in the game folder again: delete it again. Your `ReShade.ini` is kept.
+
+### Build the companion ReShade DLL
+
+From a CrabeReShade checkout, run:
+
+```powershell
+& .\companion\build.ps1
+```
+
+The script pins official ReShade 6.8.0 commit `18deaa52de0c425a78b329e9cb3c497281cd00ec`, applies the manual-addon patch and native depth forwarding, then builds Release/Win32. Deploy:
+
+```text
+<CrabeReShade checkout>/build/companion/ReShade32.dll
+    -> <game>/plugins/ReShade32.dll
+```
+
+CrabeReShade's `README.md` covers the plugin itself and its `loader.log` messages. With the companion DLL in place, `loader.log` shows `ReShade loaded (companion build): add-ons and game depth are available.` The DLSS mod installer checks that `plugins/CrabeReShade.asi` and the companion DLL are present, but does not build or replace either.
 
 ## 2. Configure NVIDIA background pacing first
 
